@@ -1,6 +1,8 @@
-﻿using MementoWebApp.Extensions;
+﻿using System.Reflection.Metadata.Ecma335;
+using MementoWebApp.Extensions;
 using MementoWebApp.Memento;
 using MementoWebApp.Models;
+using MementoWebApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,24 +33,35 @@ namespace MementoWebApp.Controllers
             return HttpContext.Session.Get<EditorHistory>(SessionHistoryKey);
         }
 
-        [HttpPost("update")]
-        public IActionResult Update([FromBody] Article updated)
+        public IActionResult Index() 
+        { 
+            var editor= GetEditor();
+            return View(new ArticleViewModel
+            {
+                Title = editor.Article.Title,
+                Body = editor.Article.Body,
+
+            });
+        }
+
+        [HttpPost]
+        public IActionResult Save(ArticleViewModel vm)
         {
             var editor = GetEditor();
             var history = GetHistory();
 
             history.SaveState(editor.CreateMemento());
 
-            editor.Article.Title = updated.Title;
-            editor.Article.Body = updated.Body;
+            editor.Article.Title = vm.Title;
+            editor.Article.Body = vm.Body;
 
             HttpContext.Session.Set(SessionEditorKey, editor);
             HttpContext.Session.Set(SessionHistoryKey, history);
 
-            return Ok(editor.Article);
+            return RedirectToAction("Index");
         }
 
-        [HttpPost("undo")]
+        [HttpPost]
         public IActionResult Undo()
         {
             var editor = GetEditor();
@@ -60,10 +73,9 @@ namespace MementoWebApp.Controllers
                 editor.Restore(memento);
                 HttpContext.Session.Set(SessionEditorKey, editor);
                 HttpContext.Session.Set(SessionHistoryKey, history);
-                return Ok(editor.Article);
-            }
+             }
 
-            return BadRequest("Nothing to undo.");
+            return RedirectToAction("Index");
         }
 
         [HttpPost("redo")]
@@ -78,10 +90,10 @@ namespace MementoWebApp.Controllers
                 editor.Restore(memento);
                 HttpContext.Session.Set(SessionEditorKey, editor);
                 HttpContext.Session.Set(SessionHistoryKey, history);
-                return Ok(editor.Article);
+               
             }
 
-            return BadRequest("Nothing to redo.");
+            return RedirectToAction("Index");
         }
     }
 }

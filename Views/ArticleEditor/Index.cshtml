@@ -1,0 +1,25 @@
+﻿@model ArticleViewModel
+@{
+	ViewData["Title"] = "Article Editor";
+
+}
+<h1>Article Editor</h1>
+<form asp-action="Save" method="post">
+	<div>
+		<label>Title</label><br />
+		<input type="text" name="Title" value="@Model.Title" style="width:400px;" />
+    </div>
+	<div>
+		<label>Body</label><br />
+		<textarea name="Body" rows="10" cols="60">@Model.Body</textarea>
+	</div>
+	<div style="margin-top:10px;">
+    <button type="submit">Save</button>
+	</div>
+</form>
+<form asp-action="Undo" method="post" style="display:inline;">
+	<button type="submit">Undo</button>
+</form>
+<form asp-action="Redo" method="post" style="display:inline">
+	<button type="submit">Redo</button>
+</form>
