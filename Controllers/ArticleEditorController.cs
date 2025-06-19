@@ -35,7 +35,7 @@ namespace MementoWebApp.Controllers
 
         public IActionResult Index() 
         { 
-            var editor= GetEditor();
+            var editor = GetEditor();
             return View(new ArticleViewModel
             {
                 Title = editor.Article.Title,
