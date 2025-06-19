@@ -16,21 +16,28 @@ namespace MementoWebApp.Controllers
 
         private ArticleEditor GetEditor()
         {
+           
             if (HttpContext.Session.Get<ArticleEditor>(SessionEditorKey) == null)
             {
                 var article = new Article { Title = "No Title", Body = "No Text" };
                 HttpContext.Session.Set(SessionEditorKey, new ArticleEditor(article));
             }
-            return HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
+            
+           
+                return HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
         }
 
         private EditorHistory GetHistory()
         {
+          
             if (HttpContext.Session.Get<EditorHistory>(SessionHistoryKey) == null)
             {
+             
                 HttpContext.Session.Set(SessionHistoryKey, new EditorHistory());
             }
-            return HttpContext.Session.Get<EditorHistory>(SessionHistoryKey);
+
+
+            return HttpContext.Session.Get<EditorHistory>(SessionHistoryKey); ;
         }
 
         public IActionResult Index() 
