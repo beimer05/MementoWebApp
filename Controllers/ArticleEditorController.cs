@@ -18,7 +18,7 @@ namespace MementoWebApp.Controllers
         {
             if (HttpContext.Session.Get<ArticleEditor>(SessionEditorKey) == null)
             {
-                var article = new Article { Title = "Draft", Body = "" };
+                var article = new Article { Title = "No Title", Body = "No Text" };
                 HttpContext.Session.Set(SessionEditorKey, new ArticleEditor(article));
             }
             return HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
