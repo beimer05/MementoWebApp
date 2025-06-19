@@ -4,7 +4,7 @@ namespace MementoWebApp.Memento
 {
     public class ArticleEditor
     {
-        public Article Article { get; private set; }
+        public Article Article { get; set; }
 
         public ArticleEditor(Article article)
         {
