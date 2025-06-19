@@ -5,6 +5,7 @@
         public string Title { get; }
         public string Body { get; }
 
+        public ArticleMemento() { };
         public ArticleMemento (string title, string body)
         {
             Title = title; Body = body;
