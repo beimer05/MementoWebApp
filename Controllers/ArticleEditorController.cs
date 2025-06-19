@@ -18,7 +18,7 @@ namespace MementoWebApp.Controllers
         {
             if (HttpContext.Session.Get<ArticleEditor>(SessionEditorKey) == null)
             {
-                var article = new Article { Id = 1, Title = "Draft", Body = "" };
+                var article = new Article { Title = "Draft", Body = "" };
                 HttpContext.Session.Set(SessionEditorKey, new ArticleEditor(article));
             }
             return HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
@@ -78,7 +78,7 @@ namespace MementoWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost("redo")]
+        [HttpPost]
         public IActionResult Redo()
         {
             var editor = GetEditor();
