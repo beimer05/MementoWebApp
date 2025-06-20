@@ -4,6 +4,7 @@
     {
         private Stack<ArticleMemento> _undoStack = new();
         private Stack<ArticleMemento> _redoStack = new();
+        public int GetUndoCount() => _undoStack.Count;
 
         public void SaveState(ArticleMemento memento)
         {

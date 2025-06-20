@@ -43,6 +43,9 @@ namespace MementoWebApp.Controllers
         public IActionResult Index() 
         { 
             var editor = GetEditor();
+            var history = GetHistory();
+
+            Console.WriteLine("Undo count: " + history.GetUndoCount());
             return View(new ArticleViewModel
             {
                 Title = editor.Article.Title,
@@ -56,8 +59,13 @@ namespace MementoWebApp.Controllers
         {
             var editor = GetEditor();
             var history = GetHistory();
+            Console.WriteLine("Saving state...");
+            Console.WriteLine("Undo count before: " + history.GetUndoCount());
 
             history.SaveState(editor.CreateMemento());
+
+
+            Console.WriteLine("Undo count after: " + history.GetUndoCount());
 
             editor.Article.Title = vm.Title;
             editor.Article.Body = vm.Body;
