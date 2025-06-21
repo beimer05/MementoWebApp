@@ -3,6 +3,7 @@ using MementoWebApp.Extensions;
 using MementoWebApp.Memento;
 using MementoWebApp.Models;
 using MementoWebApp.ViewModels;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,36 +17,46 @@ namespace MementoWebApp.Controllers
 
         private ArticleEditor GetEditor()
         {
-           
-            if (HttpContext.Session.Get<ArticleEditor>(SessionEditorKey) == null)
+            var editor = HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
+
+
+            if (editor == null)
             {
                 var article = new Article { Title = "No Title", Body = "No Text" };
-                HttpContext.Session.Set(SessionEditorKey, new ArticleEditor(article));
+                editor = new ArticleEditor(article);
+                HttpContext.Session.Set(SessionEditorKey, editor );
             }
             
            
-                return HttpContext.Session.Get<ArticleEditor>(SessionEditorKey);
+                return editor;
         }
 
         private EditorHistory GetHistory()
         {
-          
-            if (HttpContext.Session.Get<EditorHistory>(SessionHistoryKey) == null)
+            var history = HttpContext.Session.Get<EditorHistory>(SessionHistoryKey);
+
+            if (history == null)
             {
-             
-                HttpContext.Session.Set(SessionHistoryKey, new EditorHistory());
+                Console.WriteLine("History is null - creating new one");
+                history = new EditorHistory();
+                HttpContext.Session.Set(SessionHistoryKey, history);
+            }
+            else
+            {
+                Console.WriteLine("Restored history with undo count: " + history.GetUndoCount());
             }
 
-
-            return HttpContext.Session.Get<EditorHistory>(SessionHistoryKey); ;
+            return history;
         }
 
         public IActionResult Index() 
         { 
             var editor = GetEditor();
             var history = GetHistory();
+            Console.WriteLine("Loading editor: " + editor.Article.Title);
 
-            Console.WriteLine("Undo count: " + history.GetUndoCount());
+           
+
             return View(new ArticleViewModel
             {
                 Title = editor.Article.Title,
@@ -59,19 +70,27 @@ namespace MementoWebApp.Controllers
         {
             var editor = GetEditor();
             var history = GetHistory();
-            Console.WriteLine("Saving state...");
-            Console.WriteLine("Undo count before: " + history.GetUndoCount());
-
-            history.SaveState(editor.CreateMemento());
 
 
-            Console.WriteLine("Undo count after: " + history.GetUndoCount());
+            Console.WriteLine("Saving previous state...");
+            Console.WriteLine("Undo stack before: " + history.GetUndoCount());
+
+            var mementoBeforeChange = editor.CreateMemento();
+
+            history.SaveState(mementoBeforeChange);
+
+           
 
             editor.Article.Title = vm.Title;
             editor.Article.Body = vm.Body;
 
             HttpContext.Session.Set(SessionEditorKey, editor);
             HttpContext.Session.Set(SessionHistoryKey, history);
+
+
+            Console.WriteLine("Undo stack after: " + history.GetUndoCount());
+
+            history.PrintStacks();
 
             return RedirectToAction("Index");
         }
@@ -82,13 +101,23 @@ namespace MementoWebApp.Controllers
             var editor = GetEditor();
             var history = GetHistory();
 
+            Console.WriteLine("Undo clicked. Undo stack before: " + history.GetUndoCount());
+
+
             var memento = history.Undo(editor);
             if (memento != null)
             {
+                Console.WriteLine("Restoring to title: " + memento.Title);
                 editor.Restore(memento);
                 HttpContext.Session.Set(SessionEditorKey, editor);
                 HttpContext.Session.Set(SessionHistoryKey, history);
-             }
+            }
+            else
+            {
+                Console.WriteLine("No memento to restore.");
+            }
+
+            history.PrintStacks();
 
             return RedirectToAction("Index");
         }
@@ -105,8 +134,9 @@ namespace MementoWebApp.Controllers
                 editor.Restore(memento);
                 HttpContext.Session.Set(SessionEditorKey, editor);
                 HttpContext.Session.Set(SessionHistoryKey, history);
-               
+
             }
+            history.PrintStacks();
 
             return RedirectToAction("Index");
         }

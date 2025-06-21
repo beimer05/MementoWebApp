@@ -13,7 +13,9 @@ namespace MementoWebApp.Memento
 
         public ArticleMemento CreateMemento()
         {
-            return new ArticleMemento(Article.Title, Article.Body);
+            return new ArticleMemento(
+                string.Copy(Article.Title ?? string.Empty),
+                string.Copy(Article.Body ?? string.Empty));
         }
 
         public void Restore(ArticleMemento memento)
