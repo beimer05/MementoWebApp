@@ -1,5 +1,6 @@
 ﻿namespace MementoWebApp.Memento
 {
+
     public class ArticleMemento
     {
         public string Title { get; set; }

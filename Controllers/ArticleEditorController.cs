@@ -35,7 +35,7 @@ namespace MementoWebApp.Controllers
         {
             var history = HttpContext.Session.Get<EditorHistory>(SessionHistoryKey);
 
-            if (history == null)
+            if ( history == null)
             {
                 Console.WriteLine("History is null - creating new one");
                 history = new EditorHistory();
@@ -90,7 +90,7 @@ namespace MementoWebApp.Controllers
 
             Console.WriteLine("Undo stack after: " + history.GetUndoCount());
 
-            history.PrintStacks();
+       
 
             return RedirectToAction("Index");
         }
@@ -117,7 +117,7 @@ namespace MementoWebApp.Controllers
                 Console.WriteLine("No memento to restore.");
             }
 
-            history.PrintStacks();
+       
 
             return RedirectToAction("Index");
         }
@@ -136,7 +136,7 @@ namespace MementoWebApp.Controllers
                 HttpContext.Session.Set(SessionHistoryKey, history);
 
             }
-            history.PrintStacks();
+           
 
             return RedirectToAction("Index");
         }

@@ -3,7 +3,14 @@
 	ViewData["Title"] = "Article Editor";
 
 }
-<h1>Article Editor</h1>
+
+<div class="container">
+	<div class="card-header">
+    <h1>Article Editor</h1>
+	</div>
+
+<div class="card-body">
+
 <form asp-action="Save" method="post">
 	<div>
 		<label>Title</label><br />
@@ -14,12 +21,14 @@
 		<textarea name="Body" rows="10" cols="60">@Model.Body</textarea>
 	</div>
 	<div style="margin-top:10px;">
-    <button type="submit">Save</button>
+    <button type="submit" class="btn-primary">Save</button>
 	</div>
 </form>
 <form asp-action="Undo" method="post" style="display:inline;">
-	<button type="submit">Undo</button>
+	<button type="submit" class="btn-secondary">Undo</button>
 </form>
 <form asp-action="Redo" method="post" style="display:inline;">
-	<button type="submit">Redo</button>
+	<button type="submit" class="btn-secondary">Redo</button>
 </form>
+	</div>
+</div>
